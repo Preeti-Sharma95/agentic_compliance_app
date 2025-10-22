@@ -1,5 +1,7 @@
 import uuid
 import enum
+from datetime import timezone
+
 from sqlalchemy import (
     Column, Integer, String, Boolean, DATETIME, ForeignKey, Text, Enum, JSON
 )
@@ -25,6 +27,17 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     username =  Column(String, unique=True, nullable=False)
-    email = Column()
+    email = Column(String, unique=True, nullable=True)
+    hashed_password = Column(String, nullable=True)
+    is_admin = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    tokens = relationship("Token", back_populates="users", cascade="all, delete-orphan")
+    files = relationship("File", back_populates="user", cascade="all, delete-orphan")
+
+class Token(Base):
+    __tablename__ = "tokens"
 
 
+
+
+                        )
